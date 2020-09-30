@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Altice Site Database</title>
+	<!--Link to a CSS file for styles-->
+	<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css"/>
+	<!--Link to a JavaScript file for scripts-->
+	<script src="{{ url_for('static', filename='js/main.js') }}" rel="stylesheet"/></script>
+</head>
+<body>
+	<header>
+		<section class="headerTitle">
+			<a href="/">
+				<h1 class="titleContent">SiteDB</h1>
+			</a>
+			<a href="/wiki">
+				<h6 class="titleContent">Wiki</h6>
+			</a>
+		</section>
+		<table>
+			<tbody>
+				<tr>
+					<td class="headerDiv">
+						<div>
+							<h4 class="textShadow">Site Information</h4>
+							<form action="/siteQuery" method="POST">
+								<label class="textShadow">Live Site Information Query</label>
+								<input name="siteidh" placeholder=" Ex.: 086" required type="number" minlength="1" maxlength="4">
+								<input type="submit" value="Search">
+							</form>
+							<form action="/newsectorquery" method="POST">
+								<label class="textShadow">Sector Split PCI Query</label>
+								<input name="siteidh" placeholder=" Ex.: 014" required type="number" minlength="1" maxlength="4">
+								<input type="submit" value="Search">
+							</form>
+							<form action="/dashboard" method="GET">
+								<input type="submit" value="Dashboard">
+							</form>
+						</div>
+					</td>
+					<td class="headerDiv">
+						<div>
+							<h4 class="textShadow">Login</h4>
+							<form action="/login" method="POST">
+								<label class="textShadow" for="username">Username: </label>
+								<input type="text" id="username" name="usernameh"><br>
+								<label class="textShadow" for="password">Password: </label>
+								<input type="password" id="password" name="passwordh"><br>
+								<input type="submit">
+								{% if errorh %}
+									<strong>Error:</strong> {{ errorh }}
+								{% endif %}
+							</form>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</header>
+	<div class="mainbody" id="livesitequerydisplay" style="width:100%">
+		{% block livesitequerydisplay %}{% endblock %}
+	</div>
+	<div class="mainbody" id="newsectorquerydisplay" style="width:100%">
+		{% block newsectorquerydisplay %}{% endblock %}
+	</div>
+	<div class="mainbody" id="errordisplay" style="width:100%">
+		{% block errordisplay %}{% endblock %}
+	</div>
+	<div class="mainbody" id="dashboard_main_child" style="width:100%">
+		{% block dashboard_main_child %}{% endblock %}
+	</div>
+</body>
+</html>

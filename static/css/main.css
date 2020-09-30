@@ -1,0 +1,113 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+header {
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #000000;
+    background-image: url("https://www.alticeusa.com/sites/default/files/alticeusa-logo.png");
+    background-repeat: no-repeat;
+    background-position: 50% 42%;
+    height: 135px;
+    z-index: 1;
+    width: 100%;
+}
+
+.headerTitle {
+    height: auto;
+    display: block;
+    width: 100%;
+}
+
+.headerTitle .titleContent {
+    text-shadow: 3px 3px 3px black;
+    margin-top: 0;
+    margin-bottom: 0;
+    float: left;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+header table {
+    width: 100%;
+}
+
+.headerDiv {
+    width: 50%;
+}
+
+.headerDiv div {
+    text-align: center;
+}
+
+.textShadow {
+    text-shadow: 2px 2px 3px black;
+}
+
+div h4 {
+    display: block;
+    margin-bottom: 0;
+    padding: 0px;
+    margin-top: 0;
+}
+
+.mainbody {
+    margin-top: 1px;
+}
+
+/* Query Live Site Styles */
+.retgridtable {
+    border: 2px solid #FFFFFF;
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+.retgridtable td, .retgridtable th {
+    border: 1px solid #b8b8b8;
+    padding: 3px 4px;
+}
+
+.retgridtable tbody td {
+    font-size: 16px;
+
+}
+
+.retgridtable thead {
+  border-bottom: 1px solid #b8b8b8;
+}
+
+.retgridtable thead th {
+    font-size: 18px;
+    font-weight: bold;
+    color: #b8b8b8;
+    text-align: center;
+    border-left: 1px solid #b8b8b8;
+}
+
+.retgridtable thead th:first-child {
+    border-left: none;
+}
+
+.retgridtable tfoot td {
+    font-size: 14px;
+}
+
+.mapouter {
+    position: relative;
+    text-align: right;
+    height: 100%;
+    width: 100%;
+}
+
+.gmap_canvas {
+    overflow: hidden;
+    background: none;
+    height: 100%;
+    width: 100%;
+}

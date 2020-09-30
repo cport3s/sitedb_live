@@ -1,0 +1,51 @@
+20200404:131026:ssh connection success
+20200404:131027:M001S is online
+20200404:131027:Connected to M001S
+20200404:131028:20200404:131028:data insert:enbid:1-cellid:1-pci:336-prach:279-arfcn:700-band:2-txmode:4T4R-tac:3011-successful
+20200404:131028:20200404:131028:data insert:enbid:1-cellid:2-pci:337-prach:144-arfcn:700-band:2-txmode:2T2R-tac:3011-successful
+20200404:131028:20200404:131028:data insert:enbid:1-cellid:3-pci:338-prach:201-arfcn:700-band:2-txmode:2T2R-tac:3011-successful
+20200404:131028:20200404:131028:data insert:enbid:1-cellid:11-pci:115-prach:232-arfcn:2450-band:5-txmode:2T2R-tac:3011-successful
+20200404:131028:20200404:131028:data insert:enbid:1-cellid:12-pci:116-prach:684-arfcn:2450-band:5-txmode:2T2R-tac:3011-successful
+20200404:131028:20200404:131028:data insert:enbid:1-cellid:13-pci:114-prach:38-arfcn:2450-band:5-txmode:2T2R-tac:3011-successful
+20200404:131028:20200404:131028:data insert:enbid:1-cellid:101-pci:188-prach:207-arfcn:700-band:2-txmode:4T4R-tac:3011-successful
+20200404:131028:M002S is online
+20200404:131028:Connected to M002S
+20200404:131029:20200404:131029:data insert:enbid:2-cellid:1-pci:168-prach:48-arfcn:700-band:2-txmode:4T4R-tac:5031-successful
+20200404:131029:20200404:131029:data insert:enbid:2-cellid:2-pci:63-prach:240-arfcn:700-band:2-txmode:2T2R-tac:5031-successful
+20200404:131029:20200404:131029:data insert:enbid:2-cellid:3-pci:170-prach:87-arfcn:700-band:2-txmode:2T2R-tac:5031-successful
+20200404:131029:20200404:131029:data insert:enbid:2-cellid:101-pci:467-prach:9-arfcn:700-band:2-txmode:4T4R-tac:5031-successful
+20200404:131029:M003S is online
+20200404:131029:Connected to M003S
+20200404:131029:20200404:131029:data insert:enbid:3-cellid:1-pci:425-prach:72-arfcn:700-band:2-txmode:4T4R-tac:5041-successful
+20200404:131029:20200404:131029:data insert:enbid:3-cellid:2-pci:265-prach:327-arfcn:700-band:2-txmode:4T4R-tac:5041-successful
+20200404:131029:20200404:131029:data insert:enbid:3-cellid:3-pci:266-prach:276-arfcn:700-band:2-txmode:4T4R-tac:5041-successful
+20200404:131029:20200404:131029:data insert:enbid:3-cellid:4-pci:6-prach:3-arfcn:700-band:2-txmode:4T4R-tac:5041-successful
+20200404:131029:20200404:131029:data insert:enbid:3-cellid:5-pci:247-prach:75-arfcn:700-band:2-txmode:4T4R-tac:5041-successful
+20200404:131029:20200404:131029:data insert:enbid:3-cellid:6-pci:248-prach:315-arfcn:700-band:2-txmode:4T4R-tac:5041-successful
+20200404:131030:M004S is online
+20200404:131030:Connected to M004S
+20200404:131030:20200404:131030:data insert:enbid:4-cellid:1-pci:24-prach:189-arfcn:700-band:2-txmode:2T4R-tac:5031-successful
+20200404:131030:20200404:131030:data insert:enbid:4-cellid:2-pci:25-prach:102-arfcn:700-band:2-txmode:2T4R-tac:5031-successful
+20200404:131030:20200404:131030:data insert:enbid:4-cellid:3-pci:26-prach:186-arfcn:700-band:2-txmode:2T4R-tac:5031-successful
+20200404:131030:20200404:131030:data insert:enbid:4-cellid:22-pci:25-prach:327-arfcn:2100-band:4-txmode:2T2R-tac:5031-successful
+20200404:131030:M005S is online
+20200404:131030:Connected to M005S
+20200404:131031:20200404:131031:data insert:enbid:5-cellid:1-pci:171-prach:267-arfcn:700-band:2-txmode:2T2R-tac:5031-successful
+20200404:131031:20200404:131031:data insert:enbid:5-cellid:2-pci:441-prach:27-arfcn:700-band:2-txmode:2T2R-tac:5031-successful
+20200404:131031:20200404:131031:data insert:enbid:5-cellid:3-pci:18-prach:162-arfcn:700-band:2-txmode:2T2R-tac:5031-successful
+20200404:131031:20200404:131031:data insert:enbid:5-cellid:4-pci:174-prach:135-arfcn:700-band:2-txmode:2T2R-tac:5031-successful
+20200404:131031:20200404:131031:data insert:enbid:5-cellid:11-pci:171-prach:267-arfcn:2450-band:5-txmode:2T2R-tac:5031-successful
+20200404:131031:20200404:131031:data insert:enbid:5-cellid:12-pci:441-prach:27-arfcn:2450-band:5-txmode:2T2R-tac:5031-successful
+20200404:131031:20200404:131031:data insert:enbid:5-cellid:13-pci:18-prach:162-arfcn:2450-band:5-txmode:2T2R-tac:5031-successful
+20200404:131031:20200404:131031:data insert:enbid:5-cellid:14-pci:174-prach:135-arfcn:2450-band:5-txmode:2T2R-tac:5031-successful
+20200404:131031:M006S is online
+20200404:131031:Connected to M006S
+20200404:131032:20200404:131032:data insert:enbid:6-cellid:1-pci:27-prach:90-arfcn:700-band:2-txmode:2T4R-tac:5031-successful
+20200404:131032:20200404:131032:data insert:enbid:6-cellid:2-pci:28-prach:96-arfcn:700-band:2-txmode:2T4R-tac:5031-successful
+20200404:131032:20200404:131032:data insert:enbid:6-cellid:3-pci:29-prach:234-arfcn:700-band:2-txmode:2T4R-tac:5031-successful
+20200404:131032:20200404:131032:data insert:enbid:6-cellid:11-pci:116-prach:153-arfcn:2450-band:5-txmode:2T2R-tac:5031-successful
+20200404:131032:20200404:131032:data insert:enbid:6-cellid:12-pci:454-prach:156-arfcn:2450-band:5-txmode:2T2R-tac:5031-successful
+20200404:131032:20200404:131032:data insert:enbid:6-cellid:13-pci:455-prach:150-arfcn:2450-band:5-txmode:2T2R-tac:5031-successful
+20200404:131032:20200404:131032:data insert:enbid:6-cellid:14-pci:114-prach:48-arfcn:2450-band:5-txmode:2T2R-tac:5031-successful
+20200404:131032:M007S is online
+20200404:131032:Connected to M007S

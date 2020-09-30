@@ -1,0 +1,4 @@
+20200403:115007:ssh connection success
+20200403:115108:M001S is online
+20200403:115109:Connected to M001S
+20200403:115109:20200403:115209:data insert:enbid:1-cellid:1-pci:336-prach:279-arfcn:700-band:2-txmode:4T4R-tac:3011-successful
