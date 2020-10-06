@@ -20,6 +20,28 @@ class transDBInfo():
     manRouter = ''
     ibnRouter = ''
 
+class ipParaClass():
+    neName = []
+    functionName = []
+    cpIP = []
+    upIP = []
+    gwIP = []
+    vlanID = []
+    ptpIP = []
+    omIP = []
+    peerIP = []
+
+    def clrlst(self):
+        self.neName.clear()
+        self.functionName.clear()
+        self.cpIP.clear()
+        self.upIP.clear()
+        self.gwIP.clear()
+        self.vlanID.clear()
+        self.ptpIP.clear()
+        self.omIP.clear()
+        self.peerIP.clear()
+
 # RET class
 class RetDevice():
     retdeviceno = []
@@ -227,8 +249,29 @@ def site_db_consult():
     lat = querypayload[3]
     lon = querypayload[4]
     pticode = querypayload[2]
+    # Pull IP Data  from DB
+    # Instantiate ipParaClass and clear all lists to ensure they are empty.
+    ipPara = ipParaClass()
+    ipPara.clrlst()
+    # Search all siteid's ne names
+    for ne in nelist:
+        pointer.execute('select * from alticedr_sitedb.ippara where sitename = \'' + str(ne) + '\';')
+        querypayload = pointer.fetchall()
+        # If the query payload is not empty, then....
+        if querypayload:
+            # Append all information to class instance
+            for i in range(len(querypayload)):
+                ipPara.neName.append(querypayload[i][0])
+                ipPara.functionName.append(querypayload[i][1])
+                ipPara.cpIP.append(querypayload[i][2])
+                ipPara.upIP.append(querypayload[i][3])
+                ipPara.gwIP.append(querypayload[i][4])
+                ipPara.vlanID.append(querypayload[i][5])
+                ipPara.ptpIP.append(querypayload[i][6])
+                ipPara.omIP.append(querypayload[i][7])
+                ipPara.peerIP.append(querypayload[i][8])
     # Get RET Device Data from DB
-    pointer.execute('SELECT * FROM retpara WHERE sitename = \'' + str(sitename) + '\';')
+    pointer.execute('SELECT * FROM alticedr_sitedb.retpara WHERE sitename = \'' + str(sitename) + '\';')
     # We use fetchall because the return is a 2D list.
     querypayload = pointer.fetchall()
     # Check if the return is not empty
@@ -435,7 +478,7 @@ def site_db_consult():
                 transDbData.manRouter = 'N/A'
                 transDbData.ibnRouter = 'N/A'
     # 'cellnameh' is a variable in the HTML code on Main.html
-    return render_template(mainhtml, pticodeh = pticode, lath = lat, longh = lon, nodalidh = nodal_id, tricomnameh = tricom_name, nelisth = nelist, transDbDatah = transDbData, retDeviceh = retdevice, gsmCellh = gsmcell, umtsCellh = umtscell, lteCellh = ltecell)
+    return render_template(mainhtml, pticodeh = pticode, lath = lat, longh = lon, nodalidh = nodal_id, tricomnameh = tricom_name, nelisth = nelist, transDbDatah = transDbData, ipPara = ipPara, retDeviceh = retdevice, gsmCellh = gsmcell, umtsCellh = umtscell, lteCellh = ltecell)
 
 # New Sector Query Result
 @app.route('/newsectorquery', methods = ['POST'])
@@ -587,11 +630,11 @@ def newpciprovisioning():
     return render_template(newpcihtml)
 
 @app.route('/dashboard')
-# Home Page
+# Dashboard Home Page
 def dashboard_main():
     return render_template(dashboard_main_html)
 
 @app.route('/wiki')
-# Home Page
+# Wiki Home Page
 def wiki_main():
     return render_template(wiki_html)

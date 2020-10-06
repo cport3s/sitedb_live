@@ -1,66 +1,104 @@
 {% extends "Main_Base.html" %}
 {% block livesitequerydisplay %}
-	<table class="retgridtable">
-		<tbody>
-			<tr>
-				<td width="50%" style="text-align: left;">
-					<ul>
-						<li style="margin-left: 20px;">PTI Code: {{ pticodeh }}</li>
-						<li style="margin-left: 20px;">Latitude: {{ lath }}</li>
-						<li style="margin-left: 20px;">Longitude: {{ longh }}</li>
-						<li style="margin-left: 20px;">Trans ID: {{ transDbDatah.transSiteId }}</li>
-						<li style="margin-left: 20px;">Tricom Name: {{ tricomnameh }}</li>
-						<li style="margin-left: 20px;">NE Names:
-							<ul>
-								{% for ne in nelisth %}
-		  							<li>{{ ne }}</li>
-		  						{% endfor %}
-							</ul>
-						</li>
-						<li style="margin-left: 20px;">Address: {{ transDbDatah.address }}</li>
-						<li style="margin-left: 20px;">Tower Topology: {{ transDbDatah.towerTopo }}</li>
-						<li style="margin-left: 20px;">Location Type: {{ transDbDatah.locationType }}</li>
-						<li style="margin-left: 20px;">Tx Type: {{ transDbDatah.txType }}</li>
-						<li style="margin-left: 20px;">Has MAN Router? {{ transDbDatah.manRouter }}</li>
-						<li style="margin-left: 20px;">Has IBN Router? {{ transDbDatah.ibnRouter }}</li>
-					</ul>
-				</td>
-				<td width="50%">
-					<div class="mapouter">
-						<div class="gmap_canvas">
-							<iframe width="100%" height="300px" id="gmap_canvas" src="https://maps.google.com/maps?q={{ lath }}%2C%20{{ longh }}&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
-							</iframe>
-							<a href="https://www.embedgooglemap.net/blog/private-internet-access-coupon/">
-							</a>
-						</div>
-					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<div>
+	<button class="retGridTableButton" onclick="toggleContent('nocInfo')">Site Information</button>
+	<section class="subMenu" id="nocInfo">
 		<table class="retgridtable">
-		  	<thead>
-		  		<tr>
-		  			<th>RET Device Number</th>
-		  			<th>Device Name</th>
-		  			<th>Controller Subrack</th>
-		  			<th>Vendor Code</th>
-		  			<th>Serial</th>
-		  			<th>Actual Tilt</th>
-		  			<th>Antenna Model</th>
-		  			<th>Min Tilt</th>
-		  			<th>Max Tilt</th>
-		  		</tr>
-		  	</thead>
-		  	<tbody>
-		  		{% for i in retDeviceh.retdeviceno %}
-		  			<tr><td>{{ retDeviceh.retdeviceno[loop.index0] }}</td><td>{{ retDeviceh.retdevicename[loop.index0] }}</td><td>{{ retDeviceh.retsubrack[loop.index0] }}</td><td>{{ retDeviceh.retmanufacturer[loop.index0] }}</td><td>{{ retDeviceh.retserial[loop.index0] }}</td><td>{{ retDeviceh.rettilt[loop.index0] }}</td><td>{{ retDeviceh.retantmodel[loop.index0] }}</td><td>{{ retDeviceh.retantmintilt[loop.index0] }}</td><td>{{ retDeviceh.retantmaxtilt[loop.index0] }}</td></tr>
-		  		{% endfor %}
-		  	</tbody>
+			<tbody>
+				<tr>
+					<td width="50%" style="text-align: left;">
+						<ul>
+							<li>PTI Code: {{ pticodeh }}</li>
+							<li>Latitude: {{ lath }}</li>
+							<li>Longitude: {{ longh }}</li>
+							<li>Trans ID: {{ transDbDatah.transSiteId }}</li>
+							<li>Tricom Name: {{ tricomnameh }}</li>
+							<li>NE Names:
+								<ul>
+									{% for ne in nelisth %}
+										  <li>{{ ne }}</li>
+									  {% endfor %}
+								</ul>
+							</li>
+							<li>Address: {{ transDbDatah.address }}</li>
+							<li>Tower Topology: {{ transDbDatah.towerTopo }}</li>
+							<li>Location Type: {{ transDbDatah.locationType }}</li>
+							<li>Tx Type: {{ transDbDatah.txType }}</li>
+							<li>Has MAN Router? {{ transDbDatah.manRouter }}</li>
+							<li>Has IBN Router? {{ transDbDatah.ibnRouter }}</li>
+						</ul>
+					</td>
+					<td width="50%">
+						<div class="mapouter">
+							<div class="gmap_canvas">
+								<iframe width="100%" height="300px" id="gmap_canvas" src="https://maps.google.com/maps?q={{ lath }}%2C%20{{ longh }}&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+								</iframe>
+								<a href="https://www.embedgooglemap.net/blog/private-internet-access-coupon/">
+								</a>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
 		</table>
-	</div>
-	<div>
+	</section>
+	<button class="retGridTableButton" onclick="toggleContent('ipInfo')">IP Transport Information</button>
+	<section class="subMenu" id="ipInfo">
+		<table class="retgridtable">
+			  <thead>
+				  <tr>
+					  <th>NE Name</th>
+					  <th>Function Name</th>
+					  <th>Control Plane IP</th>
+					  <th>User Plane IP</th>
+					  <th>Gateway IP</th>
+					  <th>VLAN ID</th>
+					  <th>Sync IP</th>
+					  <th>O&M IP</th>
+					  <th>Destination IP</th>
+				  </tr>
+			  </thead>
+			  <tbody>
+				  {% for i in ipPara.neName %}
+					  <tr>
+						<td>{{ ipPara.neName[loop.index0] }}</td>
+						<td>{{ ipPara.functionName[loop.index0] }}</td>
+						<td>{{ ipPara.cpIP[loop.index0] }}</td>
+						<td>{{ ipPara.upIP[loop.index0] }}</td>
+						<td>{{ ipPara.gwIP[loop.index0] }}</td>
+						<td>{{ ipPara.vlanID[loop.index0] }}</td>
+						<td>{{ ipPara.ptpIP[loop.index0] }}</td>
+						<td>{{ ipPara.omIP[loop.index0] }}</td>
+						<td>{{ ipPara.peerIP[loop.index0] }}</td>
+					</tr>
+				  {% endfor %}
+			  </tbody>
+		</table>
+	</section>
+	<button class="retGridTableButton" onclick="toggleContent('retInfo')">RET Information</button>
+	<section class="subMenu" id="retInfo">
+		<table class="retgridtable">
+			  <thead>
+				  <tr>
+					  <th>RET Device Number</th>
+					  <th>Device Name</th>
+					  <th>Controller Subrack</th>
+					  <th>Vendor Code</th>
+					  <th>Serial</th>
+					  <th>Actual Tilt</th>
+					  <th>Antenna Model</th>
+					  <th>Min Tilt</th>
+					  <th>Max Tilt</th>
+				  </tr>
+			  </thead>
+			  <tbody>
+				  {% for i in retDeviceh.retdeviceno %}
+					  <tr><td>{{ retDeviceh.retdeviceno[loop.index0] }}</td><td>{{ retDeviceh.retdevicename[loop.index0] }}</td><td>{{ retDeviceh.retsubrack[loop.index0] }}</td><td>{{ retDeviceh.retmanufacturer[loop.index0] }}</td><td>{{ retDeviceh.retserial[loop.index0] }}</td><td>{{ retDeviceh.rettilt[loop.index0] }}</td><td>{{ retDeviceh.retantmodel[loop.index0] }}</td><td>{{ retDeviceh.retantmintilt[loop.index0] }}</td><td>{{ retDeviceh.retantmaxtilt[loop.index0] }}</td></tr>
+				  {% endfor %}
+			  </tbody>
+		</table>
+	</section>
+	<button class="retGridTableButton" onclick="toggleContent('gsmInfo')">GSM Information</button>
+	<section class="subMenu" id="gsmInfo">
 		<table class="retgridtable">
 			<tr><th>eGBTS Name</th><td colspan="13">{{ gsmCellh.egbtsname }}</td></tr>
 			<tr><th>BSC</th><td colspan="13">{{ gsmCellh.bscname }}</td></tr>
@@ -83,6 +121,9 @@
 		  		{% endfor %}
 			</tbody>
 		</table>
+	</section>
+	<button class="retGridTableButton" onclick="toggleContent('umtsInfo')">UMTS Information</button>
+	<section class="subMenu" id="umtsInfo">
 		<table class="retgridtable">
 			<tr><th>NodeB Name</th><td colspan="8">{{ umtsCellh.unodebname }}</td></tr>
 			<tr><th>RNC</th><td colspan="8">{{ umtsCellh.urncname }}</td></tr>
@@ -102,6 +143,9 @@
 		  		{% endfor %}
 			</tbody>
 		</table>
+	</section>
+	<button class="retGridTableButton" onclick="toggleContent('lteInfo')">LTE Information</button>
+	<section class="subMenu" id="lteInfo">
 		<table class="retgridtable">
 			<tr><th>eNodeB Name</th><td colspan="8">{{ lteCellh.enbname }}</td></tr>
 			<tr><th>eNodeB ID</th><td colspan="8">{{ lteCellh.enbid }}</td></tr>
@@ -122,8 +166,9 @@
 		  		{% endfor %}
 			</tbody>
 		</table>
-	</div>
-	<div>
+	</section>
+	<button class="retGridTableButton" onclick="toggleContent('transDBiframe')">transShooting</button>
+	<section class="subMenu" id="transDBiframe">
 		<iframe src="http://transshooting/" frameborder="0" style="width: 100%; height: 800px;"></iframe>
-	</div>
+	</section>
 {% endblock %}

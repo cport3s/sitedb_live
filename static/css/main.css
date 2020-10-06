@@ -1,6 +1,22 @@
-body {
+@keyframes fadeInAnimation {
+    from {opacity: 0;}
+    to {opacity: 100;}
+}
+
+@keyframes expandTitle {
+    from {font-size: 20px;}
+    to {font-size: 28px;}
+}
+
+@keyframes collapseTitle {
+    from {font-size: 28px;}
+    to {font-size: 20px;}
+}
+
+.mainBody {
     background-color: black;
     color: white;
+    font-family: 'Play', sans-serif;
 }
 
 header {
@@ -49,7 +65,7 @@ header table {
     text-shadow: 2px 2px 3px black;
 }
 
-div h4 {
+.headerDiv div h4 {
     display: block;
     margin-bottom: 0;
     padding: 0px;
@@ -75,7 +91,6 @@ div h4 {
 
 .retgridtable tbody td {
     font-size: 16px;
-
 }
 
 .retgridtable thead {
@@ -110,4 +125,53 @@ div h4 {
     background: none;
     height: 100%;
     width: 100%;
+}
+
+.retGridTableButton {
+    width: 100%;
+    border: 2px solid white;
+    background-color: black;
+    color: white;
+    font-size: 20px;
+    font-family: 'Play', sans-serif;
+    animation-name: collapseTitle;
+    animation-duration: 0.5s;
+}
+
+.retGridTableButton:hover {
+    animation-name: expandTitle;
+    animation-duration: 0.5s;
+    font-size: 28px;
+}
+
+#nocInfo li {
+    margin-left: 20px;
+}
+
+#nocInfo {
+    display: block;
+}
+
+#ipInfo {
+    display: none;
+}
+
+#retInfo {
+    display: none;
+}
+
+#gsmInfo {
+    display: none;
+}
+
+#umtsInfo {
+    display: none;
+}
+
+#lteInfo {
+    display: none;
+}
+
+#transDBiframe {
+    display: none;
 }
