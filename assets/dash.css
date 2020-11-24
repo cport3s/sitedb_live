@@ -1,0 +1,48 @@
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    background-color: black;
+}
+
+.titleHeader {
+    color: white;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.bscGraphFlexContainer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 100%;
+}
+
+.bscGraphFlexContainer div {
+    width: 50%;
+    height: 50%;
+}
+
+.rncGraphFlexContainer {
+    display: grid;
+    grid-template: repeat(2, 1fr) / repeat(4, 1fr);
+    width: 100%;
+}
+
+
+
+.dropdownFlexContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    width: 100%;
+}
+
+.trxGraphFlexContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    width: 100%;
+}
