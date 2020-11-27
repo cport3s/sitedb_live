@@ -1,1 +1,0 @@
-C:\Apache24\htdocs\sitedb_live\venv\Scripts\python.exe C:\Apache24\htdocs\sitedb_live\dashboard.py
