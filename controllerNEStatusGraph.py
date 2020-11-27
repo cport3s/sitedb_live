@@ -40,12 +40,14 @@ app.layout = html.Div(children=[
             dcc.Dropdown(
                 id='dataTypeDropdown',
                 options=[
-                    {'label':'Call Setup Success Rate', 'value':'Call Setup Success Rate'}, 
-                    {'label':'Drop Call Rate', 'value':'Drop Call Rate'}, 
+                    {'label':'CS Call Setup Success Rate', 'value':'CS Call Setup Success Rate'}, 
+                    {'label':'PS Call Setup Success Rate', 'value':'PS Call Setup Success Rate'}, 
+                    {'label':'CS Drop Call Rate', 'value':'CS Drop Call Rate'}, 
+                    {'label':'PS Drop Call Rate', 'value':'PS Drop Call Rate'}, 
                     {'label':'Assignment Success Rate', 'value':'Assignment Success Rate'}, 
                     {'label':'Location Update Success Rate', 'value':'Location Update Success Rate'}
                 ],
-                value='Call Setup Success Rate',
+                value='CS Call Setup Success Rate',
                 style={'width': '100%', 'font-size': str(graphTitleFontSize) + 'px', 'text-align': 'center'}
             ),
             dcc.Dropdown(
@@ -161,8 +163,8 @@ app.layout = html.Div(children=[
         Input('dataTypeDropdown', 'value')
     ])
 def updateGraphData_bsc(currentInterval, timeFrameDropdown, dataTypeDropdown):
-    gsmGraphValueConversionDict = {'Call Setup Success Rate':'cssr', 'Drop Call Rate':'dcr', 'Assignment Success Rate':'assignmentsuccessrate', 'Location Update Success Rate':'luupdatesr'}
-    umtsGraphValueConversionDict = {'Call Setup Success Rate':'csconnectionsuccessrate', 'Drop Call Rate':'csdropcallrate', 'Assignment Success Rate':'rrcconnectionsuccessrate', 'Location Update Success Rate':'pagingsuccessrate'}
+    gsmGraphValueConversionDict = {'CS Call Setup Success Rate':'cssr', 'PS Call Setup Success Rate':'edgedlssr', 'CS Drop Call Rate':'dcr', 'PS Drop Call Rate':'edgedldcr', 'Assignment Success Rate':'assignmentsuccessrate', 'Location Update Success Rate':'luupdatesr'}
+    umtsGraphValueConversionDict = {'CS Call Setup Success Rate':'csconnectionsuccessrate', 'PS Call Setup Success Rate':'psrtsuccessrate', 'CS Drop Call Rate':'csdropcallrate', 'PS Drop Call Rate':'psdropcallrate', 'Assignment Success Rate':'rrcconnectionsuccessrate', 'Location Update Success Rate':'pagingsuccessrate'}
     bscGraphList = []
     rncGraphList = []
     daysDelta = int(timeFrameDropdown)
