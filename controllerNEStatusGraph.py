@@ -24,7 +24,7 @@ dbname = 'ran_pf_data'
 loopCounter = 1
 bscNameList = ['BSC_01_RRA', 'BSC_02_STGO', 'BSC_03_VM', 'BSC_04_VM', 'BSC_05_RRA', 'BSC_06_STGO']
 rncNameList = ['RNC_01_RRA', 'RNC_02_STGO', 'RNC_03_VM', 'RNC_04_VM', 'RNC_05_RRA', 'RNC_06_STGO', 'RNC_07_VM']
-neOosReportfilePath = "D:\\ftproot\\configuration_files\\NBI_FM\\" + datetime.now().strftime("%Y%m%d") + "\\"
+neOosReportfilePath = "D:\\ftproot\\configuration_files\\NBI_FM\\" + str(datetime.now().strftime("%Y%m%d")) + "\\"
 graphTitleFontSize = 52
 
 app.layout = html.Div(children=[
