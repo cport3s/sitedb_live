@@ -31,8 +31,6 @@ body {
     width: 100%;
 }
 
-
-
 .dropdownFlexContainer {
     display: flex;
     flex-wrap: nowrap;
