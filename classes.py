@@ -154,7 +154,7 @@ class LTECell():
         self.txmode.clear()
         self.tac.clear()
         self.cellrad.clear()
-        
+
 #Database credentiales
 class dbCredentials():
     dbUsername = 'sitedb'
@@ -162,3 +162,15 @@ class dbCredentials():
     dbServerIp = '172.16.121.41'
     dataTable = 'alticedr_sitedb'
     performanceTable = 'ran_pf_data'
+
+#Core Network Database credentiales
+class coreDbCredentials():
+    dbUsername = 'root'
+    dbPassword = 'Changeme_123'
+    dbServerIp = '172.17.102.75'
+    schema = 'mme_logs'
+
+class ranControllers():
+    bscNameList = ['BSC_01_RRA', 'BSC_02_STGO', 'BSC_03_VM', 'BSC_04_VM', 'BSC_05_RRA', 'BSC_06_STGO']
+    rncNameList = ['RNC_01_RRA', 'RNC_02_STGO', 'RNC_03_VM', 'RNC_04_VM', 'RNC_05_RRA', 'RNC_06_STGO', 'RNC_07_VM']
+    lteBandList = ['Network Band=2', 'Network Band=5', 'Network Band=4', 'Network Band=42', 'Network Band=8']
