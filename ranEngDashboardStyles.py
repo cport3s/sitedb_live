@@ -80,21 +80,45 @@ class graphStyles():
     font_color='#FFFFFF'
 
 class topWorstTab():
+    outerTopWorstReportFlexContainer = {
+        'display': 'flex',
+        'width': '100%',
+        'flexDirection': 'row', 
+        'flexWrap': 'wrap',
+        'border': '1px solid white'
+    }
+
+    innerTopWorstTabContainer = {
+        'width': '100%',
+        'alignItems': 'right'
+    }
+
     datatableGridContainer = {
         'display': 'grid',
-        'grid-template': 'auto repeat(1, 1fr) / repeat(2, 1fr)',
+        'gridTemplate': 'auto repeat(1, 1fr) / repeat(2, 1fr)',
         'width': '100%',
         'border': '1px solid white'
     }
 
     style_header = {
         'backgroundColor':'black',
-        'color':'white'
+        'color':'white',
+        'whiteSpace': 'normal',
+        'height': 'auto'
     }
 
     style_cell = {
         'backgroundColor':'black',
-        'color':'white'
+        'color':'white',
+        'whiteSpace': 'normal',
+        'height': 'auto'
+    }
+
+    topWorstRecordGridContainer = {
+        'display': 'grid',
+        'gridTemplate': 'auto repeat(1, 1fr) / repeat(1, 1fr)',
+        'width': '100%',
+        'border': '1px solid white'
     }
 
 class networkCheckTab():
@@ -129,6 +153,14 @@ class graphInsightTab():
 
     graphInsightGraphContainer = {
         'width': '100%'
+    }
+
+class txCheckTab():
+    txCheckGridContainer = {
+        'display': 'grid',
+        'grid-template': 'auto repeat(1, 1fr) / repeat(2, 1fr)',
+        'width': '100%',
+        'border': '1px solid white'
     }
 
 class NetworkWideGraphColors():

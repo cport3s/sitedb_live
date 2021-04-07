@@ -148,3 +148,87 @@ def graphInsightQuery(currentGraph, startTime, selectedKPI, pointer):
         currentGraph.add_trace(go.Scatter(x=DataDataframe['time'], y=DataDataframe[kpiDict[selectedKPI]], name=ne, text=topWorstPerHourDataFrame['cellname']))
         queryRaw.clear()
     return currentGraph
+
+def queryTxData(pointer, startTime, bscNameList, rncNameList, umtsNetworkPacketLossGraph, umtsNetworkDelayGraph, gsmNetworkPacketLossGraph, gsmNetworkDelayGraph):
+    startTimeNetworkWide = (datetime.now()-timedelta(days=startTime)).strftime("%Y-%m-%d")
+    for rnc in rncNameList:
+        pointer.execute('SELECT date,delay,lost FROM ran_pf_data.rnc_packetloss_data where rncname = \'' + rnc + '\' and date > \'' + str(startTimeNetworkWide) + '\';')
+        queryRaw = pointer.fetchall()
+        queryPayload = np.array(queryRaw)
+        # Transform the query payload into a dataframe
+        umtsDataDataframe = pd.DataFrame(queryPayload, columns=['date', 'delay', 'lost'])
+        umtsNetworkPacketLossGraph.add_trace(go.Scatter(x=umtsDataDataframe['date'], y=umtsDataDataframe['lost'], name=rnc))
+        umtsNetworkDelayGraph.add_trace(go.Scatter(x=umtsDataDataframe['date'], y=umtsDataDataframe['delay'], name=rnc))
+        queryRaw.clear()
+    for bsc in bscNameList:
+        pointer.execute('SELECT date,delay,lost FROM ran_pf_data.bsc_packetloss_data where bscname = \'' + bsc + '\' and date > \'' + str(startTimeNetworkWide) + '\';')
+        queryRaw = pointer.fetchall()
+        queryPayload = np.array(queryRaw)
+        # Transform the query payload into a dataframe
+        gsmDataDataframe = pd.DataFrame(queryPayload, columns=['date', 'delay', 'lost'])
+        gsmNetworkPacketLossGraph.add_trace(go.Scatter(x=gsmDataDataframe['date'], y=gsmDataDataframe['lost'], name=bsc))
+        gsmNetworkDelayGraph.add_trace(go.Scatter(x=gsmDataDataframe['date'], y=gsmDataDataframe['delay'], name=bsc))
+        queryRaw.clear()
+    return umtsNetworkPacketLossGraph, umtsNetworkDelayGraph, gsmNetworkPacketLossGraph, gsmNetworkDelayGraph
+
+def queryTopRecords(pointer, dataTableColumns, dbTable):
+    dataTableData = []
+    # Check if db table content
+    pointer.execute('SELECT * FROM datatable_data.' + dbTable + ';')
+    # If it's not empty, the append to the datatable content
+    queryRaw = pointer.fetchall()
+    if queryRaw:
+        tempDict = {}
+        # Loop the column headers list
+        for i in range(len(queryRaw)):
+            # Loop the db content list
+            for y in range(len(dataTableColumns)):
+                # Populate the entry's dictionary
+                tempDict[dataTableColumns[y]['id']] = queryRaw[i][y]
+            # Append that dictionary to the list
+            dataTableData.append(tempDict)
+            tempDict = {}
+    # If the query content is empty, append an empty line to data
+    else:
+        dataTableData.append({'': ''})
+    return dataTableData
+
+def insertDataTable(pointer, connectr, dbTable, dataTableData):
+    # First, we must query the column names from the table
+    pointer.execute('SELECT * FROM datatable_data.' + dbTable + ';')
+    # Description method of pointer return a tuple of tuples, containing the column name on positon 0 on each tuple
+    columnNames = [column[0] for column in pointer.description]
+    # Clean up the entire table
+    pointer.execute('DELETE FROM datatable_data.' + dbTable + ';')
+    # Now, we must construct the REPLACE query
+    query = 'REPLACE INTO `datatable_data`.`' + dbTable + '` ('
+    for i in range(len(columnNames)-1):
+        query += '`' + str(columnNames[i]) + '`'
+        # Add , to separate column names in query
+        if i < len(columnNames)-2:
+            query += ', '
+    query += ') VALUES ('
+    # Create temporary list with datatable data values
+    tempList = []
+    try:
+        # We must always delete the key '' in case the datatable comes with an empty value
+        dataTableData[0].pop('')
+    except:
+        pass
+    #print(dataTableData[0])
+    for i in range(len(dataTableData)):
+        tempList.append([v for v in dataTableData[i].values()])
+    for i in range(len(tempList)):
+        for y in range(len(columnNames)-1):
+            query += '\'' + str(tempList[i][y]) + '\''
+            # Separate values by coma
+            if y < len(columnNames)-2:
+                query += ', '
+        query += ")"
+        # Separate groups of values by coma
+        if i < len(dataTableData)-1:
+            query += ', ('
+    # Close query
+    query += ";"
+    pointer.execute(query)
+    connectr.commit()
