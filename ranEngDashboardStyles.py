@@ -44,34 +44,49 @@ class headerStyles():
 class engDashboardTab():
     graphGridContainerStyle={
         'display': 'grid',
-        'gridTemplate': 'auto repeat(2, 1fr) / repeat(4, 1fr)',
+        'gridTemplate': 'auto repeat(2, 1fr) / repeat(6, 1fr)',
         'width': '100%',
         'border': '1px solid white'
     }
 
     dataTypeDropdownGridElement={
-        'grid-column': '1 / 3',
+        'grid-column': '1 / 4',
         'grid-row': '1 / 2'
     }
 
     timeFrameDropdownGridElement={
-        'grid-column': '3 / 5',
+        'grid-column': '4 / 7',
         'grid-row': '1 / 2'
     }
 
     bscGraphContainer={
-        'grid-column': '1 / 3',
+        'grid-column': '5 / 7',
         'grid-row': '2 / 3'
     }
 
     rncGraphContainer={
+        'grid-column': '5 / 7',
+        'grid-row': '3 / 4'
+    }
+
+    trxGraphContainer={
+        'grid-column': '1 / 7',
+        'grid-row': '4 / 5'
+    }
+
+    neOosGraphContainer={
         'grid-column': '3 / 5',
         'grid-row': '2 / 3'
     }
 
-    trxGraphContainer={
-        'grid-column': '1 / 5',
+    neOosLineChartContainer={
+        'grid-column': '3 / 5',
         'grid-row': '3 / 4'
+    }
+
+    neOosListContainer={
+        'grid-column': '1 / 3',
+        'grid-row': '1 / 4'
     }
 
 class graphStyles():

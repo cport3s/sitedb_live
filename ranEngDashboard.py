@@ -8,8 +8,7 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
 import mysql.connector
-import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime,timedelta
 import classes
 import ranEngDashboardStyles as styles
 import ran_functions
@@ -23,8 +22,11 @@ dbPara = classes.dbCredentials()
 ftpLogin = classes.ranFtpCredentials()
 # Data
 ranController = classes.ranControllers()
+networkAlarmFilePath = "/configuration_files/NBI_FM/{}/".format(str(datetime.now().strftime('%Y%m%d')))
 topWorstFilePath = "/BSC/top_worst_report/"
 zeroTrafficFilePath = "/BSC/zero_traffic/"
+neOosLineChartDf = pd.DataFrame(data={'time':[], 'counter':[]})
+
 
 # Styles
 tabStyles = styles.headerStyles()
@@ -35,7 +37,7 @@ networkCheckStyles = styles.networkCheckTab()
 graphColors = styles.NetworkWideGraphColors()
 graphInsightStyles = styles.graphInsightTab()
 txCheckStyles = styles.txCheckTab()
-graphTitleFontSize = 18
+graphTitleFontSize = 14
 
 app.layout = html.Div(children=[
     # Header & tabbed menu
@@ -168,6 +170,52 @@ app.layout = html.Div(children=[
                     )
                 ]
             ),
+            html.Div(
+                className = 'gridElement',
+                id = 'neOosGraphContainer',
+                style = engDashboardStyles.neOosGraphContainer,
+                children = [
+                    'NE OOS',
+                    dcc.Graph(
+                        id = 'neOosGraph'
+                    )
+                ]
+            ),
+            html.Div(
+                className = 'gridElement',
+                id = 'neOosLineChartContainer',
+                style = engDashboardStyles.neOosLineChartContainer,
+                children = [
+                    'NE OOS',
+                    dcc.Graph(
+                        id = 'neOosLineChart'
+                    )
+                ]
+            ),
+            html.Div(
+                className = 'gridElement',
+                style = engDashboardStyles.neOosListContainer,
+                children = [
+                    html.H3('Top NE OOS'),
+                    dash_table.DataTable(
+                        id = 'neOosListDataTable',
+                        style_header = dataTableStyles.style_header,
+                        style_cell = dataTableStyles.style_cell
+                    )
+                ]
+            )
+        ]
+    ),
+    # Hidden datatable to store graph values
+    html.Div(
+        className = 'hiddenElement',
+        style = {'display':'none'},
+        children = [
+            dash_table.DataTable(
+                id = 'hiddenNeOosLineChartDatatable',
+                columns = [{'name': i, 'id': i} for i in neOosLineChartDf.columns],
+                data = neOosLineChartDf.to_dict('records')
+            )
         ]
     ),
     # Top Worst Reports Tab
@@ -662,17 +710,23 @@ app.layout = html.Div(children=[
     [
         Output('bscGraph', 'figure'), 
         Output('rncGraph', 'figure'), 
-        Output('trxUsageGraph', 'figure')
+        Output('trxUsageGraph', 'figure'),
+        Output('neOosGraph', 'figure'),
+        Output('neOosLineChart', 'figure'),
+        Output('hiddenNeOosLineChartDatatable', 'data'),
+        Output('neOosListDataTable', 'columns'),
+        Output('neOosListDataTable', 'data')
     ], 
     [
         # We use the update interval function and both dropdown menus as inputs for the callback
         Input('dataUpateInterval', 'n_intervals'),
         Input('tabsContainer', 'value'),
-        Input('timeFrameDropdown', 'value'), 
+        Input('timeFrameDropdown', 'value'),
         Input('dataTypeDropdown', 'value')
-    ]
+    ],
+    State('hiddenNeOosLineChartDatatable', 'data')
 )
-def updateEngDashboardTab(currentInterval, selectedTab, timeFrameDropdown, dataTypeDropdown):
+def updateEngDashboardTab(currentInterval, selectedTab, timeFrameDropdown, dataTypeDropdown, hiddenNeOosLineChartDatatableValue):
     # Connect to DB
     connectr = mysql.connector.connect(user = dbPara.dbUsername, password = dbPara.dbPassword, host = dbPara.dbServerIp , database = dbPara.dataTable)
     # Connection must be buffered when executing multiple querys on DB before closing connection.
@@ -693,6 +747,7 @@ def updateEngDashboardTab(currentInterval, selectedTab, timeFrameDropdown, dataT
             paper_bgcolor=graphSyles.paper_bgcolor, 
             font_color=graphSyles.font_color, 
             title_font_size=graphTitleFontSize,
+            font_size=12,
             margin=dict(l=10, r=10, t=10, b=10),
             legend=dict(orientation='h')
         )
@@ -703,6 +758,7 @@ def updateEngDashboardTab(currentInterval, selectedTab, timeFrameDropdown, dataT
             paper_bgcolor=graphSyles.paper_bgcolor, 
             font_color=graphSyles.font_color,  
             title_font_size=graphTitleFontSize,
+            font_size=12,
             margin=dict(l=10, r=10, t=10, b=10),
             legend=dict(orientation='h')
         )
@@ -733,10 +789,38 @@ def updateEngDashboardTab(currentInterval, selectedTab, timeFrameDropdown, dataT
             font_size=graphTitleFontSize,
             title='TRX Load per Interface'
         )
+        # NE OOS Graph
+        startTime = (datetime.now() - timedelta(minutes=5)).strftime("%Y/%m/%d %H:%M:%S")
+        neOosLineChart = make_subplots(rows = 1, cols = 1, shared_xaxes = True, shared_yaxes = True)
+        neOosPieChart, neOosLineChart, hiddenNeOosLineChartDatatableValue, neOosListDataTableData = ran_functions.neOosGraph(pointer, startTime, neOosLineChart, hiddenNeOosLineChartDatatableValue)
+        neOosPieChart.update_layout(
+            plot_bgcolor='#000000', 
+            paper_bgcolor='#000000', 
+            font_color='#FFFFFF', 
+            title_font_size=graphTitleFontSize, 
+            font_size=12, 
+            title='NE OOS Chart', 
+            margin=dict(l=10, r=10, t=40, b=10), 
+            legend=dict(orientation='h')
+        )
+        neOosPieChart.update_traces(
+            textinfo = 'value',
+            hoverinfo = 'all'
+        )
+        # Set Graph background colores & title font size
+        neOosLineChart.update_layout(
+            plot_bgcolor=graphSyles.plot_bgcolor, 
+            paper_bgcolor=graphSyles.paper_bgcolor, 
+            font_color=graphSyles.font_color,  
+            title_font_size=graphTitleFontSize,
+            margin=dict(l=10, r=10, t=10, b=10),
+        )
+        neOosListDataTableColumns = [{'name':'NE', 'id':'NE'}, {'name':'Reason', 'id':'Reason'}]
+        #neOosListDataTableData = [{'NE':'Test', 'Reason':'Power'}]
         # Close DB Connection
         pointer.close()
         connectr.close()
-        return bscHighRefresh, rncHighRefresh, trxUsageGraph
+        return bscHighRefresh, rncHighRefresh, trxUsageGraph, neOosPieChart, neOosLineChart, hiddenNeOosLineChartDatatableValue, neOosListDataTableColumns, neOosListDataTableData
     else:
         # Close DB Connection
         pointer.close()
