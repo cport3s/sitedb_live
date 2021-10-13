@@ -127,7 +127,7 @@ def neOosGraph(pointer, startTime, neOosLineChart, hiddenNeOosLineChartDatatable
     neOosLineChart.add_trace(go.Scatter(x=tmpDataFrame['time'], y=tmpDataFrame['counter'], name=''))
     return pieChartGraph, neOosLineChart, hiddenNeOosLineChartDatatableValue, neOosListDataTableData
 
-def graphInsightQuery(currentGraph, startTime, selectedKPI, pointer):
+def graphInsightQuery(currentGraph, startTime, selectedKPI, pointer, selectedGroup, graphInsightValueDict):
     startTimeNetworkWide = (datetime.now()-timedelta(days=startTime)).strftime("%Y-%m-%d")
     kpiDict = {'LTE Data CSSR':'erabssr', 'LTE Data DCR': 'dcr', 'VoLTE CSSR': 'volteerabssr', 'VoLTE DCR': 'voltedcr', 'GSM CS CSSR': 'cscssr', 'GSM PS CSSR': 'pscssr', 'GSM CS DCR': 'csdcr', 'UMTS CSSR': 'cscssr', 'UMTS DCR': 'csdcr', 'HSDPA CSSR': 'hsdpacssr', 'HSDPA DCR': 'hsdpadcr', 'HSUPA CSSR': 'hsupacssr', 'HSUPA DCR': 'hsupadcr'}
     kpiSpecificDict = {'LTE Data CSSR':'dataerabssr', 'LTE Data DCR': 'datadcr', 'VoLTE CSSR': 'volteerabssr', 'VoLTE DCR': 'voltedcr', 'GSM CS CSSR': 'cscssr', 'GSM PS CSSR': 'pscssr', 'GSM CS DCR': 'csdcr', 'UMTS CSSR': 'cscssr', 'UMTS DCR': 'csdcr', 'HSDPA CSSR': 'hsdpacssr', 'HSDPA DCR': 'hsdpadcr', 'HSUPA CSSR': 'hsupacssr', 'HSUPA DCR': 'hsupadcr'}
@@ -136,36 +136,47 @@ def graphInsightQuery(currentGraph, startTime, selectedKPI, pointer):
     condition = ''
     order = ''
     currentList = ''
+    delta = 0
     if 'LTE' in selectedKPI or 'VoLTE' in selectedKPI:
-        currentList = neList.lteBandList
+        if selectedGroup == 'All':
+            currentList = neList.lteBandList
+        else:
+            currentList = [selectedGroup]
         networkWidetable = 'ran_report_4g_report_network_wide'
         topTable = 'ran_report_4g_report_specific'
         condition = 'ltecellgroup = \''
     elif 'UMTS' in selectedKPI or 'HSDPA' in selectedKPI or 'HSUPA' in selectedKPI:
-        currentList = neList.rncNameList
+        if selectedGroup == 'All':
+            currentList = neList.rncNameList
+        else:
+            currentList = [selectedGroup]
         networkWidetable = 'ran_report_3g_report_network_wide'
         topTable = 'ran_report_3g_report_specific'
         condition = 'rncname = \''
     elif 'GSM' in selectedKPI:
-        currentList = neList.bscNameList
+        if selectedGroup == 'All':
+            currentList = neList.bscNameList
+        else:
+            currentList = [selectedGroup]
         networkWidetable = 'ran_report_2g_report_network_wide'
         topTable = 'ran_report_2g_report_specific'
         condition = 'gbsc = \''
     else:
-        return currentGraph
+        return currentGraph, graphInsightValueDict
 
     if 'DCR' in selectedKPI:
         order = 'desc'
     elif 'CSSR' in selectedKPI:
         order = 'asc'
     else:
-        return currentGraph
+        return currentGraph, graphInsightValueDict
     # Query TOP cell names from DB
     pointer.execute('select b.time,b.cellname,b.' + kpiSpecificDict[selectedKPI] + ' from (select a.time,a.cellname,a.' + kpiSpecificDict[selectedKPI] + ',row_number() over (partition by a.time order by a.' + kpiSpecificDict[selectedKPI] + ' ' + order + ') as rn from ran_pf_data.' + topTable + ' a where a.time >= \'' + str(startTimeNetworkWide) + '\') b where b.rn = 1')
     queryRaw = pointer.fetchall()
     queryPayload = np.array(queryRaw)
     topWorstPerHourDataFrame = pd.DataFrame(queryPayload, columns=['time', 'cellname', kpiSpecificDict[selectedKPI]])
     queryRaw.clear()
+    # Plot graph
     for ne in currentList:
         query = 'select time,' + kpiDict[selectedKPI] + ' from ran_pf_data.' + networkWidetable + ' where ' + condition + ne + '\' and time > \'' + str(startTimeNetworkWide) + '\';'
         pointer.execute(query)
@@ -173,8 +184,44 @@ def graphInsightQuery(currentGraph, startTime, selectedKPI, pointer):
         queryPayload = np.array(queryRaw)
         DataDataframe = pd.DataFrame(queryPayload, columns=['time', kpiDict[selectedKPI]])
         currentGraph.add_trace(go.Scatter(x=DataDataframe['time'], y=DataDataframe[kpiDict[selectedKPI]], name=ne, text=topWorstPerHourDataFrame['cellname']))
+        # If there's only 1 NE selected, then add graph average threshold
+        if len(currentList) == 1:
+            # If selected KPI is DCR, delta must be positive
+            if '4g' in networkWidetable and 'DCR' in selectedKPI:
+                delta = 1.2
+            # If it's CSSR, delta must be negative. Delta value varies due to graph min & max peaks.
+            if '4g' in networkWidetable and 'CSSR' in selectedKPI:
+                delta = 0.999
+            if '3g' in networkWidetable and 'DCR' in selectedKPI:
+                delta = 1.2
+            if '3g' in networkWidetable and 'CSSR' in selectedKPI:
+                delta = 0.999
+            if '2g' in networkWidetable and 'DCR' in selectedKPI:
+                delta = 1.2
+            if '2g' in networkWidetable and 'CSSR' in selectedKPI:
+                delta = 0.999
+            # Copy original dataframe
+            avgBusyHourDataframe = DataDataframe.copy()
+            # Transform time column to datetime type and set index
+            avgBusyHourDataframe['time'] = pd.to_datetime(avgBusyHourDataframe['time'], format='%Y-%m-%d %H:%M:%S')
+            avgBusyHourDataframe = avgBusyHourDataframe.set_index(pd.DatetimeIndex(avgBusyHourDataframe['time']))
+            # Filter data in busy hour
+            avgBusyHourDataframe = avgBusyHourDataframe.loc[avgBusyHourDataframe['time'].between_time('08:00:00', '20:00:00')]
+            # Construct the average value list, needed to plot. We loop through DataDataframe to populate all time values, regardless of busy hour
+            avgBusyHourList = [avgBusyHourDataframe[kpiDict[selectedKPI]].mean() for y in DataDataframe['time']]            
+            deltaRangeList = [avgBusyHourDataframe[kpiDict[selectedKPI]].mean()*delta for y in DataDataframe['time']]
+            currentGraph.add_trace(go.Scatter(x=DataDataframe['time'], y=deltaRangeList, name='Busy Hour Delta Range'))
+            currentGraph.add_trace(go.Scatter(x=DataDataframe['time'], y=avgBusyHourList, name='Busy Hour Average'))
         queryRaw.clear()
-    return currentGraph
+    # Query current and week-ago data
+    query = 'SELECT ' + kpiDict[selectedKPI] + ' FROM ran_pf_data.' + networkWidetable + ' where ' + condition + ne + '\' and time > date_sub(current_timestamp(), interval 171 hour) order by time desc;'
+    pointer.execute(query)
+    queryRaw = pointer.fetchall()
+    graphInsightValueDict['Parameter'] = selectedKPI
+    graphInsightValueDict['Last Week'] = float(queryRaw[-1][0])
+    graphInsightValueDict['Current'] = float(queryRaw[0][0])
+    graphInsightValueDict['Delta'] = graphInsightValueDict['Current'] - graphInsightValueDict['Last Week']
+    return currentGraph, graphInsightValueDict
 
 def queryTxData(pointer, startTime, bscNameList, rncNameList, umtsNetworkPacketLossGraph, umtsNetworkDelayGraph, gsmNetworkPacketLossGraph, gsmNetworkDelayGraph):
     startTimeNetworkWide = (datetime.now()-timedelta(days=startTime)).strftime("%Y-%m-%d")
@@ -299,3 +346,81 @@ def downloadFtpFileString(ftpLogin, filePath, fileName):
     # Open as Dataframe
     ftp.quit()
     return s
+
+# Function to query Network Map Data
+def networkMapFunction(mysqlPointer, bscList, rncList, lteList, gateOneDropdown, gateTwoDropdown):
+
+    whereStatement = ''
+    tempCounter = 0
+    # If list contains all BSC & N/A, then there is no WHERE clause on query
+    if bscList:
+        whereStatement += ' WHERE ('
+        for bsc in bscList:
+            whereStatement += ' bsc = \'' + bsc + '\''
+            tempCounter += 1
+            # If counter is less than len(bscList), append OR to query
+            if tempCounter < len(bscList):
+                whereStatement += ' OR '
+            # Else, we're finished
+            else:
+                whereStatement += ')'
+    else:
+        pass
+    tempCounter = 0
+    # If list contains all RNC, then there is no WHERE clause on query
+    if rncList:
+        # Check if there's something already on whereStatement and there's at least 1 RNC selected
+        if whereStatement == '' and rncList:
+            whereStatement += ' WHERE ('
+        # Check if there's something on rncList
+        elif rncList:
+            whereStatement += ' ' + gateOneDropdown + ' ('
+        else:
+            pass
+        for rnc in rncList:
+            whereStatement += ' rnc = \'' + rnc + '\''
+            tempCounter += 1
+            # If counter is less than len(bscList), append OR to query
+            if tempCounter < len(rncList):
+                whereStatement += ' OR '
+            # Else, we're finished
+            else:
+                whereStatement += ')'
+    else:
+        pass
+    # Let's work with Band list now
+    tempCounter = 0
+    if lteList:
+        if whereStatement == '' and lteList:
+            whereStatement += ' WHERE ('
+        # Check if there's something on rncList
+        elif rncList or bscList:
+            whereStatement += ' ' + gateTwoDropdown + ' ('
+        else:
+            pass
+        for band in lteList:
+            whereStatement += ' ' + band + ' != \'N/A\''
+            tempCounter += 1
+            # If counter is less than len(bscList), append OR to query
+            if tempCounter < len(lteList):
+                whereStatement += ' OR '
+            # Else, we're finished
+            else:
+                whereStatement += ')'
+    else:
+        pass
+    print(whereStatement)
+    mysqlPointer.execute('SELECT site,lat,lon,bsc,rnc,provincia FROM alticedr_sitedb.raningdata' + whereStatement + ';')
+    queryRaw = mysqlPointer.fetchall()
+    if queryRaw:
+        queryPayload = np.array(queryRaw)
+        siteDataframe = pd.DataFrame(queryPayload, columns=['site', 'lat', 'lon', 'bsc', 'rnc', 'provincia'])
+        # Cast columns to float type
+        siteDataframe['lat'] = siteDataframe['lat'].astype(float)
+        siteDataframe['lon'] = siteDataframe['lon'].astype(float)
+        return siteDataframe
+    # In case the data fetched is empty, return an empty map
+    else:
+        queryPayload = []
+        siteDataframe = pd.DataFrame(queryPayload, columns=['site', 'lat', 'lon', 'bsc', 'rnc', 'provincia'])
+        return siteDataframe

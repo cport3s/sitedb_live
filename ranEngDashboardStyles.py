@@ -24,8 +24,10 @@ class headerStyles():
         'borderBottomColor': 'black',
         'borderTopLeftRadius': '7px',
         'borderTopRightRadius': '7px',
-        'paddingTop': '10px',
-        'paddingBottom': '5px',
+        'paddingTop': '6px',
+        'paddingBottom': '6px',
+        'paddingLeft': '10px',
+        'paddingRight': '10px',
         'width': 'auto'
     }
 
@@ -36,9 +38,49 @@ class headerStyles():
         'borderTopColor': 'white',
         'borderTopLeftRadius': '7px',
         'borderTopRightRadius': '7px',
-        'paddingTop': '10px',
-        'paddingBottom': '5px',
+        'paddingTop': '6px',
+        'paddingBottom': '6px',
+        'paddingLeft': '10px',
+        'paddingRight': '10px',
         'width': 'auto'
+    }
+
+class networkOverviewTab():
+    networkOverviewGridContainerStyle={
+        'display': 'grid',
+        'gridTemplate': 'auto repeat(2, 1fr) / repeat(6, 1fr)',
+        'width': '100%',
+        'border': '1px solid white'
+    }
+
+    bscDropdownGridElement={
+        'grid-column': '1 / 2',
+        'grid-row': '1 / 2'
+    }
+
+    gateOneDropdownGridElement={
+        'grid-column': '2 / 3',
+        'grid-row': '1 / 2'
+    }
+
+    rncDropdownGridElement={
+        'grid-column': '3 / 4',
+        'grid-row': '1 / 2'
+    }
+
+    gateTwoDropdownGridElement={
+        'grid-column': '4 / 5',
+        'grid-row': '1 / 2'
+    }
+
+    lteDropdownGridElement={
+        'grid-column': '5 / 7',
+        'grid-row': '1 / 2'
+    }
+
+    mapGridElement={
+        'grid-column': '1 / 7',
+        'grid-row': '2 / 4'
     }
 
 class engDashboardTab():
@@ -166,6 +208,10 @@ class graphInsightTab():
     }
 
     graphInsightRat = {
+        'width': '100%'
+    }
+
+    graphInsightGraphGroup = {
         'width': '100%'
     }
 
