@@ -1,5 +1,6 @@
 import dash
 import dash_core_components as dcc
+import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
@@ -13,7 +14,7 @@ import classes
 import ranEngDashboardStyles as styles
 import ran_functions
 
-app = dash.Dash(__name__, title='RAN-Ops Engineering Dashboard')
+app = dash.Dash(__name__, title='RAN-Ops Engineering Dashboard', external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 # DB Connection Parameters
@@ -26,7 +27,6 @@ networkAlarmFilePath = "/configuration_files/NBI_FM/{}/".format(str(datetime.now
 topWorstFilePath = "/BSC/top_worst_report/"
 zeroTrafficFilePath = "/BSC/zero_traffic/"
 neOosLineChartDf = pd.DataFrame(data={'time':[], 'counter':[]})
-
 
 # Styles
 tabStyles = styles.headerStyles()
@@ -45,7 +45,7 @@ app.layout = html.Div(children=[
     html.Div(
         style = tabStyles.headerFlexContainer,
         children = [
-            html.H2(
+            html.H4(
                 id = 'dashboardTitle',
                 children = 'RAN-Ops Engineering Dashboard',
                 style = tabStyles.dashboardTitle
@@ -104,22 +104,28 @@ app.layout = html.Div(children=[
                 id = 'bscDropdownGridElement',
                 style = networkOverviewStyles.bscDropdownGridElement,
                 children = [
-                    dcc.Dropdown(
-                        id = 'bscDropdown',
-                        options = [
-                            {'label':'BSC_01_RRA', 'value':'BSC_01_RRA'},
-                            {'label':'BSC_02_STGO', 'value':'BSC_02_STGO'},
-                            {'label':'BSC_03_VM', 'value':'BSC_03_VM'},
-                            {'label':'BSC_04_VM', 'value':'BSC_04_VM'},
-                            {'label':'BSC_05_RRA', 'value':'BSC_05_RRA'},
-                            {'label':'BSC_06_STGO', 'value':'BSC_06_STGO'},
-                            {'label':'N/A', 'value':'N/A'}
+                    dbc.DropdownMenu(
+                        children = [
+                            dcc.Checklist(
+                                id = 'bscDropdown',
+                                options = [
+                                    {'label':'BSC_01_RRA', 'value':'BSC_01_RRA'},
+                                    {'label':'BSC_02_STGO', 'value':'BSC_02_STGO'},
+                                    {'label':'BSC_03_VM', 'value':'BSC_03_VM'},
+                                    {'label':'BSC_04_VM', 'value':'BSC_04_VM'},
+                                    {'label':'BSC_05_RRA', 'value':'BSC_05_RRA'},
+                                    {'label':'BSC_06_STGO', 'value':'BSC_06_STGO'},
+                                    {'label':'N/A', 'value':'N/A'}
+                                ],
+                                value = ['BSC_01_RRA', 'BSC_02_STGO', 'BSC_03_VM', 'BSC_04_VM', 'BSC_05_RRA', 'BSC_06_STGO'],
+                                labelStyle = {'display': 'block'}
+                            )
                         ],
-                        value = ['BSC_01_RRA', 'BSC_02_STGO', 'BSC_03_VM', 'BSC_04_VM', 'BSC_05_RRA', 'BSC_06_STGO'],
-                        multi=True
+                        label = 'BSC',
+                        color = 'primary'
                     )
                 ]
-            ), 
+            ),
             # Logic Gate #1
             html.Div(
                 id = 'gateOneDropdownGridElement',
@@ -140,21 +146,27 @@ app.layout = html.Div(children=[
             html.Div(
                 id = 'rncDropdownGridElement',
                 style = networkOverviewStyles.rncDropdownGridElement,
-                children =[
-                    dcc.Dropdown(
-                        id = 'rncDropdown',
-                        options = [
-                            {'label':'RNC_01_RRA', 'value':'RNC_01_RRA'},
-                            {'label':'RNC_02_STGO', 'value':'RNC_02_STGO'},
-                            {'label':'RNC_03_VM', 'value':'RNC_03_VM'},
-                            {'label':'RNC_04_VM', 'value':'RNC_04_VM'},
-                            {'label':'RNC_05_RRA', 'value':'RNC_05_RRA'},
-                            {'label':'RNC_06_STGO', 'value':'RNC_06_STGO'},
-                            {'label':'RNC_07_VM', 'value':'RNC_07_VM'},
-                            {'label':'N/A', 'value':'N/A'}
+                children = [
+                    dbc.DropdownMenu(
+                        children = [
+                            dcc.Checklist(
+                                id = 'rncDropdown',
+                                options = [
+                                    {'label':'RNC_01_RRA', 'value':'RNC_01_RRA'},
+                                    {'label':'RNC_02_STGO', 'value':'RNC_02_STGO'},
+                                    {'label':'RNC_03_VM', 'value':'RNC_03_VM'},
+                                    {'label':'RNC_04_VM', 'value':'RNC_04_VM'},
+                                    {'label':'RNC_05_RRA', 'value':'RNC_05_RRA'},
+                                    {'label':'RNC_06_STGO', 'value':'RNC_06_STGO'},
+                                    {'label':'RNC_07_VM', 'value':'RNC_07_VM'},
+                                    {'label':'N/A', 'value':'N/A'}
+                                ],
+                                value = ['RNC_01_RRA', 'RNC_02_STGO', 'RNC_03_VM', 'RNC_04_VM', 'RNC_05_RRA', 'RNC_06_STGO', 'RNC_07_VM'],
+                                labelStyle = {'display': 'block'}
+                            )
                         ],
-                        value = ['RNC_01_RRA', 'RNC_02_STGO', 'RNC_03_VM', 'RNC_04_VM', 'RNC_05_RRA', 'RNC_06_STGO', 'RNC_07_VM'],
-                        multi = True
+                        label = 'RNC',
+                        color = 'danger'
                     )
                 ]
             ),
@@ -178,19 +190,26 @@ app.layout = html.Div(children=[
             html.Div(
                 id = 'lteDropdownGridElement',
                 style = networkOverviewStyles.lteDropdownGridElement,
-                children =[
-                    dcc.Dropdown(
-                        id = 'lteDropdown',
-                        options = [
-                            {'label':'L1900', 'value':'L1900'},
-                            {'label':'AWS', 'value':'AWS'},
-                            {'label':'L850', 'value':'L850'},
-                            {'label':'L900', 'value':'L900'},
-                            {'label':'WTTX', 'value':'WTTX'},
-                            {'label':'N/A', 'value':'N/A'}
+                children = [
+                    dbc.DropdownMenu(
+                        children = [
+                            dcc.Checklist(
+                                id = 'lteDropdown',
+                                options = [
+                                    {'label':'L1900', 'value':'L1900'},
+                                    {'label':'AWS', 'value':'AWS'},
+                                    {'label':'L850', 'value':'L850'},
+                                    {'label':'L900', 'value':'L900'},
+                                    {'label':'WTTX', 'value':'WTTX'},
+                                    {'label':'N/A', 'value':'N/A'}
+                                ],
+                                value = ['L1900', 'AWS', 'L850', 'L900', 'WTTX'],
+                                labelStyle = {'display': 'block'}
+                            )
                         ],
-                        value = ['L1900', 'AWS', 'L850', 'L900', 'WTTX'],
-                        multi = True
+                        label = 'LTE Bands',
+                        color = 'success',
+                        style = {'width':'100%'}
                     )
                 ]
             ),
@@ -198,9 +217,35 @@ app.layout = html.Div(children=[
                 id = 'mapGridElement',
                 style = networkOverviewStyles.mapGridElement,
                 children = [
-                    'Network Map',
                     dcc.Graph(
                         id = 'networkMap'
+                    )
+                ]
+            ),
+            html.Div(
+                id = 'gsmDistributionGraph',
+                style = networkOverviewStyles.gsmDistGraphElement,
+                children = [
+                    dcc.Graph(
+                        id = 'gsmPieChart'
+                    )
+                ]
+            ),
+            html.Div(
+                id = 'umtsDistributionGraph',
+                style = networkOverviewStyles.umtsDistGraphElement,
+                children = [
+                    dcc.Graph(
+                        id = 'umtsPieChart'
+                    )
+                ]
+            ),
+            html.Div(
+                id = 'lteDistributionGraph',
+                style = networkOverviewStyles.lteDistGraphElement,
+                children = [
+                    dcc.Graph(
+                        id = 'ltePieChart'
                     )
                 ]
             )
@@ -838,7 +883,12 @@ app.layout = html.Div(children=[
 
 # Callback to update Network Overview Tab
 @app.callback(
-    Output('networkMap', 'figure'),
+    [
+        Output('networkMap', 'figure'),
+        Output('gsmPieChart', 'figure'),
+        Output('umtsPieChart', 'figure'),
+        Output('ltePieChart', 'figure')
+    ],
     [
         Input('dataUpateInterval', 'n_intervals'),
         Input('bscDropdown', 'value'),
@@ -853,7 +903,7 @@ def updateNetworkOverviewTab(interval, bscList, rncList, lteList, gateOneDropdow
     mysqlConnector = mysql.connector.connect(user = dbPara.dbUsername, password = dbPara.dbPassword, host = dbPara.dbServerIp , database = dbPara.dataTable)
     # Connection must be buffered when executing multiple querys on DB before closing connection.
     mysqlPointer = mysqlConnector.cursor(buffered=True)
-    siteDataframe = ran_functions.networkMapFunction(mysqlPointer, bscList, rncList, lteList, gateOneDropdown, gateTwoDropdown)
+    siteDataframe, bscPieChart, rncPieChart, ltePieChart = ran_functions.networkMapFunction(mysqlPointer, bscList, rncList, lteList, gateOneDropdown, gateTwoDropdown)
     map = px.scatter_mapbox(siteDataframe, lat='lat', lon='lon', hover_name='site', hover_data=['bsc', 'rnc'], zoom=7.5)
     map.update_layout(
         mapbox_style='open-street-map',
@@ -861,10 +911,37 @@ def updateNetworkOverviewTab(interval, bscList, rncList, lteList, gateOneDropdow
         height=650
         )
     map.update_traces(marker=dict(size=10))
+    bscPieChart.update_layout(
+        plot_bgcolor='#000000', 
+        paper_bgcolor='#000000', 
+        font_color='#FFFFFF', 
+        title_font_size=graphTitleFontSize, 
+        font_size=12, 
+        title='GSM Distribution Chart', 
+        margin=dict(l=10, r=10, t=40, b=10)
+    )
+    rncPieChart.update_layout(
+        plot_bgcolor='#000000', 
+        paper_bgcolor='#000000', 
+        font_color='#FFFFFF', 
+        title_font_size=graphTitleFontSize, 
+        font_size=12, 
+        title='UMTS Distribution Chart', 
+        margin=dict(l=10, r=10, t=40, b=10)
+    )
+    ltePieChart.update_layout(
+        plot_bgcolor='#000000', 
+        paper_bgcolor='#000000', 
+        font_color='#FFFFFF', 
+        title_font_size=graphTitleFontSize, 
+        font_size=12, 
+        title='LTE Band Distribution Chart', 
+        margin=dict(l=10, r=10, t=40, b=10)
+    )
     # Close DB connection
     mysqlPointer.close()
     mysqlConnector.close()
-    return map
+    return map, bscPieChart, rncPieChart, ltePieChart
 
 # Callback to update Engineering Dashboard Tab
 @app.callback(

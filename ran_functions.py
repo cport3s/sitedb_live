@@ -349,7 +349,6 @@ def downloadFtpFileString(ftpLogin, filePath, fileName):
 
 # Function to query Network Map Data
 def networkMapFunction(mysqlPointer, bscList, rncList, lteList, gateOneDropdown, gateTwoDropdown):
-
     whereStatement = ''
     tempCounter = 0
     # If list contains all BSC & N/A, then there is no WHERE clause on query
@@ -393,7 +392,7 @@ def networkMapFunction(mysqlPointer, bscList, rncList, lteList, gateOneDropdown,
     if lteList:
         if whereStatement == '' and lteList:
             whereStatement += ' WHERE ('
-        # Check if there's something on rncList
+        # Check if there's something on rncList OR bscList
         elif rncList or bscList:
             whereStatement += ' ' + gateTwoDropdown + ' ('
         else:
@@ -401,7 +400,7 @@ def networkMapFunction(mysqlPointer, bscList, rncList, lteList, gateOneDropdown,
         for band in lteList:
             whereStatement += ' ' + band + ' != \'N/A\''
             tempCounter += 1
-            # If counter is less than len(bscList), append OR to query
+            # If counter is less than len(lteList), append OR to query
             if tempCounter < len(lteList):
                 whereStatement += ' OR '
             # Else, we're finished
@@ -409,18 +408,39 @@ def networkMapFunction(mysqlPointer, bscList, rncList, lteList, gateOneDropdown,
                 whereStatement += ')'
     else:
         pass
-    print(whereStatement)
-    mysqlPointer.execute('SELECT site,lat,lon,bsc,rnc,provincia FROM alticedr_sitedb.raningdata' + whereStatement + ';')
+    mysqlPointer.execute('SELECT site,lat,lon,bsc,rnc,provincia,AWS,WTTX,L850,L900,L1900 FROM alticedr_sitedb.raningdata' + whereStatement + ';')
     queryRaw = mysqlPointer.fetchall()
     if queryRaw:
         queryPayload = np.array(queryRaw)
-        siteDataframe = pd.DataFrame(queryPayload, columns=['site', 'lat', 'lon', 'bsc', 'rnc', 'provincia'])
+        siteDataframe = pd.DataFrame(queryPayload, columns=['site', 'lat', 'lon', 'bsc', 'rnc', 'provincia', 'AWS', 'WTTX', 'L850', 'L900', 'L1900'])
         # Cast columns to float type
         siteDataframe['lat'] = siteDataframe['lat'].astype(float)
         siteDataframe['lon'] = siteDataframe['lon'].astype(float)
-        return siteDataframe
+        # Add a column with fixed value 1
+        bscPieDataframe = pd.DataFrame()
+        bscPieDataframe['bsc'] = siteDataframe['bsc']
+        bscPieDataframe['site_count'] = 1
+        bscPieDataframe = bscPieDataframe.groupby('bsc').count().reset_index()
+        rncPieDataframe = pd.DataFrame()
+        rncPieDataframe['rnc'] = siteDataframe['rnc']
+        rncPieDataframe['site_count'] = 1
+        rncPieDataframe = rncPieDataframe.groupby('rnc').count().reset_index()
+        ltePieDataframe = pd.DataFrame()
+        ltePieDataframe['band'] = lteList
+        ltePieDataframe['site_count'] = 0
+        for n in range(len(siteDataframe['site'])):
+            for z in range(len(lteList)):
+                if siteDataframe[lteList[z]][n] != 'N/A':
+                    ltePieDataframe['site_count'][z] += 1
+        bscPieChart = px.pie(bscPieDataframe, values='site_count', names='bsc')
+        rncPieChart = px.pie(rncPieDataframe, values='site_count', names='rnc')
+        ltePieChart = px.pie(ltePieDataframe, values='site_count', names='band')
+        return siteDataframe, bscPieChart, rncPieChart, ltePieChart
     # In case the data fetched is empty, return an empty map
     else:
         queryPayload = []
         siteDataframe = pd.DataFrame(queryPayload, columns=['site', 'lat', 'lon', 'bsc', 'rnc', 'provincia'])
-        return siteDataframe
+        bscPieChart = px.pie()
+        rncPieChart = px.pie()
+        ltePieChart = px.pie()
+        return siteDataframe, bscPieChart, rncPieChart, ltePieChart

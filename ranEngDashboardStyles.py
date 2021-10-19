@@ -55,7 +55,8 @@ class networkOverviewTab():
 
     bscDropdownGridElement={
         'grid-column': '1 / 2',
-        'grid-row': '1 / 2'
+        'grid-row': '1 / 2',
+        'justify-self': 'center'
     }
 
     gateOneDropdownGridElement={
@@ -65,7 +66,8 @@ class networkOverviewTab():
 
     rncDropdownGridElement={
         'grid-column': '3 / 4',
-        'grid-row': '1 / 2'
+        'grid-row': '1 / 2',
+        'justify-self': 'center'
     }
 
     gateTwoDropdownGridElement={
@@ -74,13 +76,29 @@ class networkOverviewTab():
     }
 
     lteDropdownGridElement={
-        'grid-column': '5 / 7',
-        'grid-row': '1 / 2'
+        'grid-column': '5 / 6',
+        'grid-row': '1 / 2',
+        'justify-self': 'center'
     }
 
     mapGridElement={
         'grid-column': '1 / 7',
         'grid-row': '2 / 4'
+    }
+
+    gsmDistGraphElement={
+        'grid-column': '1 / 3',
+        'grid-row': '4 / 5'
+    }
+
+    umtsDistGraphElement={
+        'grid-column': '3 / 5',
+        'grid-row': '4 / 5'
+    }
+
+    lteDistGraphElement={
+        'grid-column': '5 / 7',
+        'grid-row': '4 / 5'
     }
 
 class engDashboardTab():
